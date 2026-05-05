@@ -33,6 +33,13 @@
       background: #1e3c72;
       color: white;
       border: none;
+      font-weight: bold;
+    }
+
+    #status {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -43,7 +50,7 @@
   <h2>ABSENSI DKJ GROUP</h2>
 
   <form onsubmit="kirim(event)">
-    <input type="text" id="nama" placeholder="Nama" required>
+    <input type="text" id="nama" placeholder="Nama Karyawan" required>
 
     <select id="cabang" required>
       <option value="">Pilih Cabang</option>
@@ -60,11 +67,13 @@
 
     <input type="text" id="kode" placeholder="Kode Harian" required>
 
-    <!-- FOTO REALTIME -->
+    <!-- FOTO -->
     <input type="file" id="foto" accept="image/*" capture="environment" required>
 
-    <!-- LOKASI AUTO -->
-    <input type="text" id="lokasi" placeholder="Lokasi otomatis..." readonly>
+    <!-- LOKASI -->
+    <input type="text" id="lokasi" placeholder="Klik tombol ambil lokasi" readonly>
+
+    <button type="button" onclick="ambilLokasi()">📍 Ambil Lokasi</button>
 
     <button type="submit">Kirim Absen</button>
   </form>
@@ -73,13 +82,32 @@
 </div>
 
 <script>
-navigator.geolocation.getCurrentPosition(function(pos) {
-  const lat = pos.coords.latitude;
-  const lng = pos.coords.longitude;
-  document.getElementById("lokasi").value =
-    "https://maps.google.com/?q=" + lat + "," + lng;
-});
+// AMBIL LOKASI MANUAL (BIAR PASTI MUNCUL IZIN)
+function ambilLokasi() {
+  if (!navigator.geolocation) {
+    alert("HP tidak support lokasi");
+    return;
+  }
 
+  document.getElementById("status").innerText = "Mengambil lokasi...";
+
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+
+      document.getElementById("lokasi").value =
+        "https://maps.google.com/?q=" + lat + "," + lng;
+
+      document.getElementById("status").innerText = "✅ Lokasi berhasil diambil";
+    },
+    function(err) {
+      document.getElementById("status").innerText = "❌ Izinkan akses lokasi dulu!";
+    }
+  );
+}
+
+// KIRIM DATA
 function kirim(e) {
   e.preventDefault();
 
@@ -89,7 +117,14 @@ function kirim(e) {
   const kode = document.getElementById("kode").value;
   const lokasi = document.getElementById("lokasi").value;
 
+  if (!lokasi) {
+    alert("Ambil lokasi dulu bro!");
+    return;
+  }
+
   const scriptURL = "https://script.google.com/macros/s/AKfycbwciD_6SiHD-tEYj4Pp7IwkyddG63jVnD9hlLWl98JNZLPn_E95mhaJm5NpdWHC5fXdzg/exec";
+
+  document.getElementById("status").innerText = "Mengirim data...";
 
   fetch(scriptURL, {
     method: "POST",
@@ -98,7 +133,7 @@ function kirim(e) {
     })
   })
   .then(res => {
-    document.getElementById("status").innerText = "✅ Absen terkirim!";
+    document.getElementById("status").innerText = "✅ Absen berhasil!";
     document.querySelector("form").reset();
   })
   .catch(err => {
