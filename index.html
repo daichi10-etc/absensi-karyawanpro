@@ -33,7 +33,6 @@ button {
   background:#1e3c72;
   color:white;
   border:none;
-  font-weight:bold;
 }
 
 #status {
@@ -66,11 +65,9 @@ button {
 
 <input type="text" id="kode" placeholder="Kode Harian" required>
 
-<!-- FOTO -->
-<input type="file" id="foto" accept="image/*" capture="environment" required>
+<input type="file" accept="image/*" capture="environment" required>
 
-<!-- LOKASI -->
-<input type="text" id="lokasi" placeholder="Lokasi belum diambil" readonly>
+<input type="text" id="lokasi" placeholder="Belum ambil lokasi" readonly>
 
 <button type="button" onclick="ambilLokasi()">📍 Ambil Lokasi</button>
 
@@ -81,66 +78,42 @@ button {
 </div>
 
 <script>
-
-// AMBIL LOKASI (PASTI MUNCUL IZIN)
 function ambilLokasi() {
-  if (!navigator.geolocation) {
-    alert("HP tidak support GPS");
-    return;
-  }
-
-  document.getElementById("status").innerText = "Mengambil lokasi...";
-
   navigator.geolocation.getCurrentPosition(
     function(pos) {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
-
       document.getElementById("lokasi").value =
-        "https://maps.google.com/?q=" + lat + "," + lng;
-
-      document.getElementById("status").innerText = "✅ Lokasi berhasil diambil";
+        "https://maps.google.com/?q=" +
+        pos.coords.latitude + "," + pos.coords.longitude;
     },
-    function(err) {
-      alert("IZINKAN lokasi dulu bro!");
+    function() {
+      alert("Izinkan lokasi dulu!");
     }
   );
 }
 
-// KIRIM DATA
 function kirim(e) {
   e.preventDefault();
 
-  const nama = document.getElementById("nama").value;
-  const cabang = document.getElementById("cabang").value;
-  const jenis = document.getElementById("jenis").value;
-  const kode = document.getElementById("kode").value;
-  const lokasi = document.getElementById("lokasi").value;
+  const data = {
+    nama: document.getElementById("nama").value,
+    cabang: document.getElementById("cabang").value,
+    jenis: document.getElementById("jenis").value,
+    kode: document.getElementById("kode").value,
+    lokasi: document.getElementById("lokasi").value
+  };
 
-  if (!lokasi) {
-    alert("Klik ambil lokasi dulu!");
+  if (!data.lokasi) {
+    alert("Ambil lokasi dulu!");
     return;
   }
 
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwciD_6SiHD-tEYj4Pp7IwkyddG63jVnD9hlLWl98JNZLPn_E95mhaJm5NpdWHC5fXdzg/exec";
-
-  document.getElementById("status").innerText = "Mengirim...";
-
-  fetch(scriptURL, {
+  fetch("https://script.google.com/macros/s/AKfycbwciD_6SiHD-tEYj4Pp7IwkyddG63jVnD9hlLWl98JNZLPn_E95mhaJm5NpdWHC5fXdzg/exec", {
     method: "POST",
-    body: JSON.stringify({
-      nama, cabang, jenis, kode, lokasi
-    })
-  })
-  .then(() => {
-    document.getElementById("status").innerText = "✅ Absen berhasil!";
-    document.querySelector("form").reset();
-  })
-  .catch(() => {
-    document.getElementById("status").innerText = "❌ Gagal kirim";
+    body: JSON.stringify(data)
+  }).then(() => {
+    document.getElementById("status").innerText = "✅ Berhasil!";
   });
 }
-
 </script>
 
 </body>
