@@ -1,1 +1,72 @@
-<h1>WEBSITE ABSENSI GUE HIDUP 🔥</h1>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Absensi Karyawan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f6f8;
+      padding: 20px;
+    }
+    .box {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    input, select, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+    }
+    button {
+      background: green;
+      color: white;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Absensi Karyawan</h2>
+
+  <form onsubmit="kirim(event)">
+    <input type="text" id="nama" placeholder="Nama" required>
+
+    <select id="cabang" required>
+      <option value="">Pilih Cabang</option>
+      <option>Jepara</option>
+      <option>Metro</option>
+      <option>Rawuh</option>
+    </select>
+
+    <select id="jenis" required>
+      <option value="">Jenis Absen</option>
+      <option>Masuk</option>
+      <option>Pulang</option>
+    </select>
+
+    <input type="text" id="kode" placeholder="Kode Harian" required>
+
+    <input type="text" id="lokasi" placeholder="Link Lokasi Google Maps" required>
+
+    <button type="submit">Kirim</button>
+  </form>
+
+  <p id="status"></p>
+</div>
+
+<script>
+function kirim(e) {
+  e.preventDefault();
+
+  document.getElementById("status").innerText = "✅ Absen terkirim (sementara belum masuk database)";
+}
+</script>
+
+</body>
+</html>
