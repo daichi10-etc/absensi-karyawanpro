@@ -2,34 +2,64 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Absensi Karyawan</title>
+  <title>Absensi DKJ Group</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
       font-family: Arial;
-      background: #f4f6f8;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
       padding: 20px;
+      color: white;
     }
 
     .box {
       max-width: 400px;
       margin: auto;
       background: white;
+      color: black;
       padding: 20px;
-      border-radius: 10px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 12px;
+      color: gray;
+      margin-bottom: 15px;
     }
 
     input, select, button {
       width: 100%;
       margin-top: 10px;
-      padding: 10px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
     }
 
     button {
-      background: green;
+      background: #1e3c72;
       color: white;
       border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #16325c;
+    }
+
+    #status {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -37,10 +67,11 @@
 <body>
 
 <div class="box">
-  <h2>Absensi Karyawan</h2>
+  <h2>ABSENSI DKJ GROUP</h2>
+  <div class="subtitle">Sistem Absensi Digital</div>
 
   <form onsubmit="kirim(event)">
-    <input type="text" id="nama" placeholder="Nama" required>
+    <input type="text" id="nama" placeholder="Nama Karyawan" required>
 
     <select id="cabang" required>
       <option value="">Pilih Cabang</option>
@@ -62,7 +93,7 @@
     <button type="submit">Kirim Absen</button>
   </form>
 
-  <p id="status" style="text-align:center;margin-top:10px;"></p>
+  <p id="status"></p>
 </div>
 
 <script>
