@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Absensi DKJ Group</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Arial;
+  background: linear-gradient(135deg,#1e3c72,#2a5298);
+  padding:20px;
+  color:white;
+}
+
+.box {
+  max-width:400px;
+  margin:auto;
+  background:white;
+  color:black;
+  padding:20px;
+  border-radius:12px;
+}
+
+input, select, button {
+  width:100%;
+  margin-top:10px;
+  padding:12px;
+  border-radius:8px;
+}
+
+button {
+  background:#1e3c72;
+  color:white;
+  border:none;
+}
+
+#status {
+  text-align:center;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>ABSENSI DKJ GROUP</h2>
+
+<form onsubmit="kirim(event)">
+<input type="text" id="nama" placeholder="Nama" required>
+
+<select id="cabang" required>
+<option value="">Pilih Cabang</option>
+<option>Jepara</option>
+<option>Metro</option>
+<option>Rawuh</option>
+</select>
+
+<select id="jenis" required>
+<option value="">Jenis Absen</option>
+<option>Masuk</option>
+<option>Pulang</option>
+</select>
+
+<input type="text" id="kode" placeholder="Kode Harian" required>
+
+<input type="file" accept="image/*" capture="environment" required>
+
+<input type="text" id="lokasi" placeholder="Belum ambil lokasi" readonly>
+
+<button type="button" onclick="ambilLokasi()">📍 Ambil Lokasi</button>
+
+<button type="submit">Kirim Absen</button>
+</form>
+
+<p id="status"></p>
+</div>
+
+<script>
+function ambilLokasi() {
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      document.getElementById("lokasi").value =
+        "https://maps.google.com/?q=" +
+        pos.coords.latitude + "," + pos.coords.longitude;
+    },
+    function() {
+      alert("Izinkan lokasi dulu!");
+    }
+  );
+}
+
+function kirim(e) {
+  e.preventDefault();
+
+  const data = {
+    nama: document.getElementById("nama").value,
+    cabang: document.getElementById("cabang").value,
+    jenis: document.getElementById("jenis").value,
+    kode: document.getElementById("kode").value,
+    lokasi: document.getElementById("lokasi").value
+  };
+
+  if (!data.lokasi) {
+    alert("Ambil lokasi dulu!");
+    return;
+  }
+
+  fetch("https://script.google.com/macros/s/AKfycbwciD_6SiHD-tEYj4Pp7IwkyddG63jVnD9hlLWl98JNZLPn_E95mhaJm5NpdWHC5fXdzg/exec", {
+    method: "POST",
+    body: JSON.stringify(data)
+  }).then(() => {
+    document.getElementById("status").innerText = "✅ Berhasil!";
+  });
+}
+</script>
+
+</body>
+</html>
