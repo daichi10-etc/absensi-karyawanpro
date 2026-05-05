@@ -63,8 +63,30 @@
 <script>
 function kirim(e) {
   e.preventDefault();
+ const nama = document.getElementById("nama").value;
+  const cabang = document.getElementById("cabang").value;
+  const jenis = document.getElementById("jenis").value;
+  const kode = document.getElementById("kode").value;
+  const lokasi = document.getElementById("lokasi").value;
 
-  document.getElementById("status").innerText = "✅ Absen terkirim (sementara belum masuk database)";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbwciD_6SiHD-tEYj4Pp7IwkyddG63jVnD9hlLWl98JNZLPn_E95mhaJm5NpdWHC5fXdzg/exec";
+
+  fetch(scriptURL, {
+    method: "POST",
+    body: JSON.stringify({
+      nama: nama,
+      cabang: cabang,
+      jenis: jenis,
+      kode: kode,
+      lokasi: lokasi
+    })
+  })
+  .then(res => {
+    document.getElementById("status").innerText = "✅ Absen berhasil disimpan!";
+  })
+  .catch(err => {
+    document.getElementById("status").innerText = "❌ Gagal kirim data";
+  });
 }
 </script>
 
