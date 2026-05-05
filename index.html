@@ -1,91 +1,91 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Absensi DKJ Group</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Absensi DKJ Group</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      font-family: Arial;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      padding: 20px;
-      color: white;
-    }
+<style>
+body {
+  font-family: Arial;
+  background: linear-gradient(135deg,#1e3c72,#2a5298);
+  padding:20px;
+  color:white;
+}
 
-    .box {
-      max-width: 400px;
-      margin: auto;
-      background: white;
-      color: black;
-      padding: 20px;
-      border-radius: 12px;
-    }
+.box {
+  max-width:400px;
+  margin:auto;
+  background:white;
+  color:black;
+  padding:20px;
+  border-radius:12px;
+}
 
-    input, select, button {
-      width: 100%;
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 8px;
-    }
+input, select, button {
+  width:100%;
+  margin-top:10px;
+  padding:12px;
+  border-radius:8px;
+}
 
-    button {
-      background: #1e3c72;
-      color: white;
-      border: none;
-      font-weight: bold;
-    }
+button {
+  background:#1e3c72;
+  color:white;
+  border:none;
+  font-weight:bold;
+}
 
-    #status {
-      text-align: center;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-  </style>
+#status {
+  text-align:center;
+  margin-top:10px;
+}
+</style>
 </head>
 
 <body>
 
 <div class="box">
-  <h2>ABSENSI DKJ GROUP</h2>
+<h2>ABSENSI DKJ GROUP</h2>
 
-  <form onsubmit="kirim(event)">
-    <input type="text" id="nama" placeholder="Nama Karyawan" required>
+<form onsubmit="kirim(event)">
+<input type="text" id="nama" placeholder="Nama" required>
 
-    <select id="cabang" required>
-      <option value="">Pilih Cabang</option>
-      <option>Jepara</option>
-      <option>Metro</option>
-      <option>Rawuh</option>
-    </select>
+<select id="cabang" required>
+<option value="">Pilih Cabang</option>
+<option>Jepara</option>
+<option>Metro</option>
+<option>Rawuh</option>
+</select>
 
-    <select id="jenis" required>
-      <option value="">Jenis Absen</option>
-      <option>Masuk</option>
-      <option>Pulang</option>
-    </select>
+<select id="jenis" required>
+<option value="">Jenis Absen</option>
+<option>Masuk</option>
+<option>Pulang</option>
+</select>
 
-    <input type="text" id="kode" placeholder="Kode Harian" required>
+<input type="text" id="kode" placeholder="Kode Harian" required>
 
-    <!-- FOTO -->
-    <input type="file" id="foto" accept="image/*" capture="environment" required>
+<!-- FOTO -->
+<input type="file" id="foto" accept="image/*" capture="environment" required>
 
-    <!-- LOKASI -->
-    <input type="text" id="lokasi" placeholder="Klik tombol ambil lokasi" readonly>
+<!-- LOKASI -->
+<input type="text" id="lokasi" placeholder="Lokasi belum diambil" readonly>
 
-    <button type="button" onclick="ambilLokasi()">📍 Ambil Lokasi</button>
+<button type="button" onclick="ambilLokasi()">📍 Ambil Lokasi</button>
 
-    <button type="submit">Kirim Absen</button>
-  </form>
+<button type="submit">Kirim Absen</button>
+</form>
 
-  <p id="status"></p>
+<p id="status"></p>
 </div>
 
 <script>
-// AMBIL LOKASI MANUAL (BIAR PASTI MUNCUL IZIN)
+
+// AMBIL LOKASI (PASTI MUNCUL IZIN)
 function ambilLokasi() {
   if (!navigator.geolocation) {
-    alert("HP tidak support lokasi");
+    alert("HP tidak support GPS");
     return;
   }
 
@@ -102,7 +102,7 @@ function ambilLokasi() {
       document.getElementById("status").innerText = "✅ Lokasi berhasil diambil";
     },
     function(err) {
-      document.getElementById("status").innerText = "❌ Izinkan akses lokasi dulu!";
+      alert("IZINKAN lokasi dulu bro!");
     }
   );
 }
@@ -118,13 +118,13 @@ function kirim(e) {
   const lokasi = document.getElementById("lokasi").value;
 
   if (!lokasi) {
-    alert("Ambil lokasi dulu bro!");
+    alert("Klik ambil lokasi dulu!");
     return;
   }
 
   const scriptURL = "https://script.google.com/macros/s/AKfycbwciD_6SiHD-tEYj4Pp7IwkyddG63jVnD9hlLWl98JNZLPn_E95mhaJm5NpdWHC5fXdzg/exec";
 
-  document.getElementById("status").innerText = "Mengirim data...";
+  document.getElementById("status").innerText = "Mengirim...";
 
   fetch(scriptURL, {
     method: "POST",
@@ -132,14 +132,15 @@ function kirim(e) {
       nama, cabang, jenis, kode, lokasi
     })
   })
-  .then(res => {
+  .then(() => {
     document.getElementById("status").innerText = "✅ Absen berhasil!";
     document.querySelector("form").reset();
   })
-  .catch(err => {
+  .catch(() => {
     document.getElementById("status").innerText = "❌ Gagal kirim";
   });
 }
+
 </script>
 
 </body>
