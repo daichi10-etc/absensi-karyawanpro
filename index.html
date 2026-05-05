@@ -20,19 +20,6 @@
       color: black;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 5px;
-    }
-
-    .subtitle {
-      text-align: center;
-      font-size: 12px;
-      color: gray;
-      margin-bottom: 15px;
     }
 
     input, select, button {
@@ -40,26 +27,12 @@
       margin-top: 10px;
       padding: 12px;
       border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 14px;
     }
 
     button {
       background: #1e3c72;
       color: white;
       border: none;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #16325c;
-    }
-
-    #status {
-      text-align: center;
-      margin-top: 10px;
-      font-weight: bold;
     }
   </style>
 </head>
@@ -68,10 +41,9 @@
 
 <div class="box">
   <h2>ABSENSI DKJ GROUP</h2>
-  <div class="subtitle">Sistem Absensi Digital</div>
 
   <form onsubmit="kirim(event)">
-    <input type="text" id="nama" placeholder="Nama Karyawan" required>
+    <input type="text" id="nama" placeholder="Nama" required>
 
     <select id="cabang" required>
       <option value="">Pilih Cabang</option>
@@ -88,7 +60,11 @@
 
     <input type="text" id="kode" placeholder="Kode Harian" required>
 
-    <input type="text" id="lokasi" placeholder="Link Lokasi Google Maps" required>
+    <!-- FOTO REALTIME -->
+    <input type="file" id="foto" accept="image/*" capture="environment" required>
+
+    <!-- LOKASI AUTO -->
+    <input type="text" id="lokasi" placeholder="Lokasi otomatis..." readonly>
 
     <button type="submit">Kirim Absen</button>
   </form>
@@ -97,6 +73,13 @@
 </div>
 
 <script>
+navigator.geolocation.getCurrentPosition(function(pos) {
+  const lat = pos.coords.latitude;
+  const lng = pos.coords.longitude;
+  document.getElementById("lokasi").value =
+    "https://maps.google.com/?q=" + lat + "," + lng;
+});
+
 function kirim(e) {
   e.preventDefault();
 
@@ -111,19 +94,15 @@ function kirim(e) {
   fetch(scriptURL, {
     method: "POST",
     body: JSON.stringify({
-      nama: nama,
-      cabang: cabang,
-      jenis: jenis,
-      kode: kode,
-      lokasi: lokasi
+      nama, cabang, jenis, kode, lokasi
     })
   })
   .then(res => {
-    document.getElementById("status").innerText = "✅ Absen berhasil disimpan!";
+    document.getElementById("status").innerText = "✅ Absen terkirim!";
     document.querySelector("form").reset();
   })
   .catch(err => {
-    document.getElementById("status").innerText = "❌ Gagal kirim data";
+    document.getElementById("status").innerText = "❌ Gagal kirim";
   });
 }
 </script>
