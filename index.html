@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <title>Absensi Karyawan</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
     body {
       font-family: Arial;
       background: #f4f6f8;
       padding: 20px;
     }
+
     .box {
       max-width: 400px;
       margin: auto;
@@ -17,11 +19,13 @@
       padding: 20px;
       border-radius: 10px;
     }
+
     input, select, button {
       width: 100%;
       margin-top: 10px;
       padding: 10px;
     }
+
     button {
       background: green;
       color: white;
@@ -29,6 +33,7 @@
     }
   </style>
 </head>
+
 <body>
 
 <div class="box">
@@ -54,16 +59,17 @@
 
     <input type="text" id="lokasi" placeholder="Link Lokasi Google Maps" required>
 
-    <button type="submit">Kirim</button>
+    <button type="submit">Kirim Absen</button>
   </form>
 
-  <p id="status"></p>
+  <p id="status" style="text-align:center;margin-top:10px;"></p>
 </div>
 
 <script>
 function kirim(e) {
   e.preventDefault();
- const nama = document.getElementById("nama").value;
+
+  const nama = document.getElementById("nama").value;
   const cabang = document.getElementById("cabang").value;
   const jenis = document.getElementById("jenis").value;
   const kode = document.getElementById("kode").value;
@@ -83,6 +89,7 @@ function kirim(e) {
   })
   .then(res => {
     document.getElementById("status").innerText = "✅ Absen berhasil disimpan!";
+    document.querySelector("form").reset();
   })
   .catch(err => {
     document.getElementById("status").innerText = "❌ Gagal kirim data";
