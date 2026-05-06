@@ -107,7 +107,7 @@ function kirim(e) {
     return;
   }
 
-  fetch( https://script.google.com/macros/s/AKfycbxaGnNqHOkx2j8OUi7QBMApNKrbd9TeHBonEyFoRq-hYBcWf1JI8f64vxBX1Kml4zt2Pw/exec, {
+  fetch("https://script.google.com/macros/s/AKfycbxaGnNqHOkx2j8OUi7QBMApNKrbd9TeHBonEyFoRq-hYBcWf1JI8f64vxBX1Kml4zt2Pw/exec", {
     method: "POST",
     body: JSON.stringify(data)
   }).then(() => {
