@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Absensi DKJ SIMPLE</title>
+<title>Absensi DKJ FINAL</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -34,11 +34,12 @@ button {
   background: #1e3c72;
   color: white;
   border: none;
-  cursor: pointer;
 }
 
-button:hover {
-  opacity: 0.9;
+video {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 10px;
 }
 
 #status {
@@ -53,11 +54,11 @@ button:hover {
 
 <div class="box">
 
-<h2>ABSENSI DKJ</h2>
+<h2>ABSENSI DKJ FINAL</h2>
 
 <form onsubmit="kirim(event)">
 
-<input type="text" id="nama" placeholder="Nama Karyawan" required>
+<input type="text" id="nama" placeholder="Nama" required>
 
 <select id="cabang" required>
   <option value="">Pilih Cabang</option>
@@ -74,8 +75,14 @@ button:hover {
 
 <input type="text" id="kode" placeholder="Kode Hari Ini" required>
 
-<input type="text" id="lokasi" placeholder="Lokasi GPS" readonly>
+<!-- KAMERA -->
+<h4>Selfie</h4>
+<button type="button" onclick="bukaKamera()">📷 Buka Kamera</button>
+<video id="video" autoplay></video>
+<canvas id="canvas" style="display:none;"></canvas>
 
+<!-- LOKASI -->
+<input type="text" id="lokasi" placeholder="Lokasi GPS" readonly>
 <button type="button" onclick="ambilLokasi()">📍 Ambil Lokasi</button>
 
 <button type="submit">Kirim Absensi</button>
@@ -88,58 +95,82 @@ button:hover {
 
 <script>
 
+let fotoBase64 = "";
+
 // =====================
-// KODE HARIAN OTOMATIS
+// KODE HARIAN
 // =====================
 const kodeHariIni = new Date().getDate().toString() + "DKJ";
 
 // =====================
-// AMBIL LOKASI GPS
+// KAMERA
+// =====================
+function bukaKamera() {
+  navigator.mediaDevices.getUserMedia({ video: true })
+  .then(stream => {
+    document.getElementById("video").srcObject = stream;
+  })
+  .catch(() => {
+    alert("Izinkan kamera dulu di browser");
+  });
+}
+
+// ambil foto dari video
+function ambilFoto() {
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  ctx.drawImage(video, 0, 0);
+
+  fotoBase64 = canvas.toDataURL("image/jpeg");
+}
+
+// auto ambil foto saat submit
+setInterval(() => {
+  if (document.getElementById("video").srcObject) {
+    ambilFoto();
+  }
+}, 3000);
+
+// =====================
+// GPS
 // =====================
 function ambilLokasi() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(pos) {
-      const lat = pos.coords.latitude;
-      const lng = pos.coords.longitude;
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
 
-      document.getElementById("lokasi").value = lat + "," + lng;
-    }, function() {
-      alert("Izinkan GPS dulu!");
-    });
-  } else {
-    alert("Browser tidak support GPS");
-  }
+    document.getElementById("lokasi").value = lat + "," + lng;
+  }, function() {
+    alert("Aktifkan GPS dulu");
+  });
 }
 
 // =====================
-// KIRIM DATA KE GOOGLE SHEET
+// KIRIM DATA
 // =====================
 function kirim(e) {
   e.preventDefault();
 
-  const nama = document.getElementById("nama").value;
-  const cabang = document.getElementById("cabang").value;
-  const jenis = document.getElementById("jenis").value;
   const kode = document.getElementById("kode").value;
-  const lokasi = document.getElementById("lokasi").value;
-
-  if (!lokasi) {
-    alert("Ambil lokasi dulu!");
-    return;
-  }
 
   if (kode !== kodeHariIni) {
-    alert("Kode hari ini salah!");
+    alert("Kode salah hari ini!");
     return;
   }
 
   const data = {
     waktu: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
-    nama: nama,
-    cabang: cabang,
-    jenis: jenis,
+    nama: document.getElementById("nama").value,
+    cabang: document.getElementById("cabang").value,
+    jenis: document.getElementById("jenis").value,
     kode: kode,
-    lokasi: lokasi
+    lokasi: document.getElementById("lokasi").value,
+    foto: fotoBase64
   };
 
   fetch("PASTE_GOOGLE_SCRIPT_URL_DI_SINI", {
