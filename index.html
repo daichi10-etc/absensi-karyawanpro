@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>ABSENSI DKJ FINAL</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABSENSI FOTO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 
@@ -15,7 +15,7 @@ color:white;
 }
 
 .box{
-max-width:420px;
+max-width:400px;
 margin:auto;
 background:white;
 color:black;
@@ -23,30 +23,17 @@ padding:20px;
 border-radius:12px;
 }
 
-input,select,button{
+input,button{
 width:100%;
 padding:12px;
 margin-top:10px;
 border-radius:8px;
-border:1px solid #ccc;
-}
-
-button{
-background:#1e3c72;
-color:white;
-border:none;
 }
 
 video{
 width:100%;
 margin-top:10px;
 border-radius:10px;
-}
-
-#status{
-text-align:center;
-margin-top:10px;
-font-weight:bold;
 }
 
 </style>
@@ -56,81 +43,62 @@ font-weight:bold;
 
 <div class="box">
 
-<h2>ABSENSI DKJ FINAL</h2>
+<h2>ABSENSI FOTO</h2>
 
-<form onsubmit="kirim(event)">
+<input type="text" id="nama" placeholder="Nama">
 
-<input type="text" id="nama" placeholder="Nama" required>
-
-<select id="cabang" required>
-<option value="">Pilih Cabang</option>
-<option>Jepara</option>
-<option>Metro</option>
-<option>Rawuh</option>
-</select>
-
-<select id="jenis" required>
-<option value="">Jenis Absen</option>
-<option>Masuk</option>
-<option>Pulang</option>
-</select>
-
-<input type="text" id="kode" placeholder="Kode Hari Ini" required>
-
-<h4>Selfie</h4>
-
-<button type="button" onclick="bukaKamera()">📷 Buka Kamera</button>
+<button onclick="bukaKamera()">
+📷 Buka Kamera
+</button>
 
 <video id="video" autoplay playsinline></video>
 
-<canvas id="canvas" style="display:none;"></canvas>
+<button onclick="ambilFoto()">
+📸 Ambil Foto
+</button>
 
-<input type="text" id="lokasi" placeholder="Lokasi GPS" readonly>
-
-<button type="button" onclick="ambilLokasi()">📍 Ambil Lokasi</button>
-
-<button type="submit">Kirim Absensi</button>
-
-</form>
+<button onclick="kirim()">
+Kirim
+</button>
 
 <p id="status"></p>
 
 </div>
 
+<canvas id="canvas" style="display:none;"></canvas>
+
 <script>
 
 let fotoBase64 = "";
 
-const kodeHariIni =
-new Date().getDate().toString() + "DKJ";
-
-// =======================
+// =================
 // BUKA KAMERA
-// =======================
+// =================
 function bukaKamera(){
 
-navigator.mediaDevices.getUserMedia({
-video:true
+navigator.mediaDevices
+.getUserMedia({
+
+video:{
+width:320,
+height:240
+}
+
 })
 
 .then(stream=>{
 
-document.getElementById("video")
+document
+.getElementById("video")
 .srcObject = stream;
-
-})
-
-.catch(()=>{
-
-alert("Izinkan kamera!");
 
 });
 
 }
 
-// =======================
+// =================
 // AMBIL FOTO
-// =======================
+// =================
 function ambilFoto(){
 
 const video =
@@ -139,105 +107,49 @@ document.getElementById("video");
 const canvas =
 document.getElementById("canvas");
 
+canvas.width = 320;
+canvas.height = 240;
+
 const ctx =
 canvas.getContext("2d");
 
-canvas.width = video.videoWidth;
-canvas.height = video.videoHeight;
+ctx.drawImage(video,0,0,320,240);
 
-ctx.drawImage(video,0,0);
-
+// KOMPRES FOTO
 fotoBase64 =
-canvas.toDataURL("image/jpeg");
-
-}
-
-// =======================
-// GPS
-// =======================
-function ambilLokasi(){
-
-navigator.geolocation.getCurrentPosition(
-
-function(pos){
-
-const lat = pos.coords.latitude;
-const lng = pos.coords.longitude;
-
-document.getElementById("lokasi").value =
-lat + "," + lng;
-
-},
-
-function(){
-
-alert("Aktifkan GPS!");
-
-}
-
+canvas.toDataURL(
+"image/jpeg",
+0.5
 );
 
+alert("Foto berhasil diambil");
+
 }
 
-// =======================
+// =================
 // KIRIM
-// =======================
-function kirim(e){
-
-e.preventDefault();
-
-ambilFoto();
-
-const kode =
-document.getElementById("kode").value;
-
-if(kode !== kodeHariIni){
-
-alert("Kode salah hari ini!");
-return;
-
-}
+// =================
+function kirim(){
 
 if(!fotoBase64){
 
-alert("Selfie dulu!");
-return;
-
-}
-
-if(!document.getElementById("lokasi").value){
-
-alert("Ambil lokasi dulu!");
+alert("Ambil foto dulu");
 return;
 
 }
 
 const data = {
 
-waktu:new Date().toLocaleString(
-"id-ID",
-{timeZone:"Asia/Jakarta"}
-),
-
 nama:
 document.getElementById("nama").value,
-
-cabang:
-document.getElementById("cabang").value,
-
-jenis:
-document.getElementById("jenis").value,
-
-kode:kode,
-
-lokasi:
-document.getElementById("lokasi").value,
 
 foto:fotoBase64
 
 };
 
-fetch("https://script.google.com/macros/s/AKfycbwy9RfpxtKHL3xNUushgGAt0g09PJYde4oUZqaEGCPbmWLv6newTkUvxmNJsRLw7kIuKQ/exec",{
+fetch(
+"PASTE_URL_APPS_SCRIPT",
+{
 
 method:"POST",
 
@@ -245,17 +157,21 @@ body:JSON.stringify(data)
 
 })
 
-.then(()=>{
+.then(r=>r.text())
 
-document.getElementById("status")
-.innerText = "✅ Absen berhasil!";
+.then(res=>{
+
+document
+.getElementById("status")
+.innerText = res;
 
 })
 
-.catch(()=>{
+.catch(err=>{
 
-document.getElementById("status")
-.innerText = "❌ Gagal kirim!";
+document
+.getElementById("status")
+.innerText = err;
 
 });
 
