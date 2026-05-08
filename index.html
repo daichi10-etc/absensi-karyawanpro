@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>ABSENSI FOTO</title>
+<title>ABSENSI DKJ</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -15,7 +15,7 @@ color:white;
 }
 
 .box{
-max-width:400px;
+max-width:420px;
 margin:auto;
 background:white;
 color:black;
@@ -23,17 +23,23 @@ padding:20px;
 border-radius:12px;
 }
 
-input,button{
+input,select,button{
 width:100%;
 padding:12px;
 margin-top:10px;
 border-radius:8px;
 }
 
-video{
-width:100%;
+button{
+background:#1e3c72;
+color:white;
+border:none;
+}
+
+#status{
+text-align:center;
 margin-top:10px;
-border-radius:10px;
+font-weight:bold;
 }
 
 </style>
@@ -43,113 +49,105 @@ border-radius:10px;
 
 <div class="box">
 
-<h2>ABSENSI FOTO</h2>
+<h2>ABSENSI DKJ FINAL</h2>
 
 <input type="text" id="nama" placeholder="Nama">
 
-<button onclick="bukaKamera()">
-📷 Buka Kamera
-</button>
+<select id="cabang">
+<option>Jepara</option>
+<option>Metro</option>
+<option>Rawuh</option>
+</select>
 
-<video id="video" autoplay playsinline></video>
+<select id="jenis">
+<option>Masuk</option>
+<option>Pulang</option>
+</select>
 
-<button onclick="ambilFoto()">
-📸 Ambil Foto
+<input type="file"
+id="foto"
+accept="image/*"
+capture="user">
+
+<input type="text"
+id="lokasi"
+placeholder="Lokasi"
+readonly>
+
+<button onclick="ambilLokasi()">
+📍 Ambil Lokasi
 </button>
 
 <button onclick="kirim()">
-Kirim
+Kirim Absensi
 </button>
 
 <p id="status"></p>
 
 </div>
 
-<canvas id="canvas" style="display:none;"></canvas>
-
 <script>
 
-let fotoBase64 = "";
+function ambilLokasi(){
 
-// =================
-// BUKA KAMERA
-// =================
-function bukaKamera(){
+navigator.geolocation.getCurrentPosition(
 
-navigator.mediaDevices
-.getUserMedia({
+function(pos){
 
-video:{
-width:320,
-height:240
-}
+document.getElementById("lokasi").value =
+pos.coords.latitude + "," +
+pos.coords.longitude;
 
-})
+},
 
-.then(stream=>{
+function(){
 
-document
-.getElementById("video")
-.srcObject = stream;
-
-});
+alert("GPS gagal");
 
 }
 
-// =================
-// AMBIL FOTO
-// =================
-function ambilFoto(){
-
-const video =
-document.getElementById("video");
-
-const canvas =
-document.getElementById("canvas");
-
-canvas.width = 320;
-canvas.height = 240;
-
-const ctx =
-canvas.getContext("2d");
-
-ctx.drawImage(video,0,0,320,240);
-
-// KOMPRES FOTO
-fotoBase64 =
-canvas.toDataURL(
-"image/jpeg",
-0.5
 );
 
-alert("Foto berhasil diambil");
-
 }
 
-// =================
-// KIRIM
-// =================
 function kirim(){
 
-if(!fotoBase64){
+const file =
+document.getElementById("foto")
+.files[0];
 
-alert("Ambil foto dulu");
+if(!file){
+
+alert("Foto wajib");
 return;
 
 }
+
+const reader =
+new FileReader();
+
+reader.onloadend = function(){
 
 const data = {
 
 nama:
 document.getElementById("nama").value,
 
-foto:fotoBase64
+cabang:
+document.getElementById("cabang").value,
+
+jenis:
+document.getElementById("jenis").value,
+
+lokasi:
+document.getElementById("lokasi").value,
+
+foto:
+reader.result
 
 };
 
-fetch(
-"https://script.google.com/macros/s/AKfycbxB49l2jbME-bvEESSDHsg3ILzUu0dPP9Gb9RjMP-YpeNhfQrpnTwWs3FHh_415nRH8FA/exec",
-{
+fetch("https://script.google.com/macros/s/AKfycbxB49l2jbME-bvEESSDHsg3ILzUu0dPP9Gb9RjMP-YpeNhfQrpnTwWs3FHh_415nRH8FA/exec",{
 
 method:"POST",
 
@@ -161,19 +159,21 @@ body:JSON.stringify(data)
 
 .then(res=>{
 
-document
-.getElementById("status")
+document.getElementById("status")
 .innerText = res;
 
 })
 
 .catch(err=>{
 
-document
-.getElementById("status")
-.innerText = err;
+document.getElementById("status")
+.innerText = "ERROR";
 
 });
+
+};
+
+reader.readAsDataURL(file);
 
 }
 
