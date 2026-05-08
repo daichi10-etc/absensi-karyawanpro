@@ -2,52 +2,54 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Absensi DKJ </title>
+<title>ABSENSI DKJ FINAL</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  font-family: Arial;
-  background: #1e3c72;
-  padding: 20px;
-  color: white;
+
+body{
+font-family:Arial;
+background:#1e3c72;
+padding:20px;
+color:white;
 }
 
-.box {
-  max-width: 420px;
-  margin: auto;
-  background: white;
-  color: black;
-  padding: 20px;
-  border-radius: 12px;
+.box{
+max-width:420px;
+margin:auto;
+background:white;
+color:black;
+padding:20px;
+border-radius:12px;
 }
 
-input, select, button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+input,select,button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:8px;
+border:1px solid #ccc;
 }
 
-button {
-  background: #1e3c72;
-  color: white;
-  border: none;
+button{
+background:#1e3c72;
+color:white;
+border:none;
 }
 
-video {
-  width: 100%;
-  margin-top: 10px;
-  border-radius: 10px;
+video{
+width:100%;
+margin-top:10px;
+border-radius:10px;
 }
 
-#status {
-  text-align: center;
-  margin-top: 10px;
+#status{
+text-align:center;
+margin-top:10px;
+font-weight:bold;
 }
+
 </style>
-
 </head>
 
 <body>
@@ -61,28 +63,30 @@ video {
 <input type="text" id="nama" placeholder="Nama" required>
 
 <select id="cabang" required>
-  <option value="">Pilih Cabang</option>
-  <option>Jepara</option>
-  <option>Metro</option>
-  <option>Rawuh</option>
+<option value="">Pilih Cabang</option>
+<option>Jepara</option>
+<option>Metro</option>
+<option>Rawuh</option>
 </select>
 
 <select id="jenis" required>
-  <option value="">Jenis Absen</option>
-  <option>Masuk</option>
-  <option>Pulang</option>
+<option value="">Jenis Absen</option>
+<option>Masuk</option>
+<option>Pulang</option>
 </select>
 
 <input type="text" id="kode" placeholder="Kode Hari Ini" required>
 
-<!-- KAMERA -->
 <h4>Selfie</h4>
+
 <button type="button" onclick="bukaKamera()">📷 Buka Kamera</button>
-<video id="video" autoplay></video>
+
+<video id="video" autoplay playsinline></video>
+
 <canvas id="canvas" style="display:none;"></canvas>
 
-<!-- LOKASI -->
 <input type="text" id="lokasi" placeholder="Lokasi GPS" readonly>
+
 <button type="button" onclick="ambilLokasi()">📍 Ambil Lokasi</button>
 
 <button type="submit">Kirim Absensi</button>
@@ -97,92 +101,163 @@ video {
 
 let fotoBase64 = "";
 
-// =====================
-// KODE HARIAN
-// =====================
-const kodeHariIni = new Date().getDate().toString() + "DKJ";
+const kodeHariIni =
+new Date().getDate().toString() + "DKJ";
 
-// =====================
-// KAMERA
-// =====================
-function bukaKamera() {
-  navigator.mediaDevices.getUserMedia({ video: true })
-  .then(stream => {
-    document.getElementById("video").srcObject = stream;
-  })
-  .catch(() => {
-    alert("Izinkan kamera dulu di browser");
-  });
+// =======================
+// BUKA KAMERA
+// =======================
+function bukaKamera(){
+
+navigator.mediaDevices.getUserMedia({
+video:true
+})
+
+.then(stream=>{
+
+document.getElementById("video")
+.srcObject = stream;
+
+})
+
+.catch(()=>{
+
+alert("Izinkan kamera!");
+
+});
+
 }
 
-// ambil foto dari video
-function ambilFoto() {
-  const video = document.getElementById("video");
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
+// =======================
+// AMBIL FOTO
+// =======================
+function ambilFoto(){
 
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
+const video =
+document.getElementById("video");
 
-  ctx.drawImage(video, 0, 0);
+const canvas =
+document.getElementById("canvas");
 
-  fotoBase64 = canvas.toDataURL("image/jpeg");
+const ctx =
+canvas.getContext("2d");
+
+canvas.width = video.videoWidth;
+canvas.height = video.videoHeight;
+
+ctx.drawImage(video,0,0);
+
+fotoBase64 =
+canvas.toDataURL("image/jpeg");
+
 }
 
-// auto ambil foto saat submit
-setInterval(() => {
-  if (document.getElementById("video").srcObject) {
-    ambilFoto();
-  }
-}, 3000);
-
-// =====================
+// =======================
 // GPS
-// =====================
-function ambilLokasi() {
-  navigator.geolocation.getCurrentPosition(function(pos) {
-    const lat = pos.coords.latitude;
-    const lng = pos.coords.longitude;
+// =======================
+function ambilLokasi(){
 
-    document.getElementById("lokasi").value = lat + "," + lng;
-  }, function() {
-    alert("Aktifkan GPS dulu");
-  });
+navigator.geolocation.getCurrentPosition(
+
+function(pos){
+
+const lat = pos.coords.latitude;
+const lng = pos.coords.longitude;
+
+document.getElementById("lokasi").value =
+lat + "," + lng;
+
+},
+
+function(){
+
+alert("Aktifkan GPS!");
+
 }
 
-// =====================
-// KIRIM DATA
-// =====================
-function kirim(e) {
-  e.preventDefault();
+);
 
-  const kode = document.getElementById("kode").value;
+}
 
-  if (kode !== kodeHariIni) {
-    alert("Kode salah hari ini!");
-    return;
-  }
+// =======================
+// KIRIM
+// =======================
+function kirim(e){
 
-  const data = {
-    waktu: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
-    nama: document.getElementById("nama").value,
-    cabang: document.getElementById("cabang").value,
-    jenis: document.getElementById("jenis").value,
-    kode: kode,
-    lokasi: document.getElementById("lokasi").value,
-    foto: fotoBase64
-  };
+e.preventDefault();
 
-  fetch("https://script.google.com/macros/s/AKfycbx9enAyBdQ9c3obQWy5TsDUZ1ILGZxxlHj259WHBq8GorPir82e0vJtCd9XQDLBK0lTMg/exec", {
-    method: "POST",
-    body: JSON.stringify(data)
-  })
-  .then(() => {
-    document.getElementById("status").innerText = "✅ Absen berhasil!";
-  })
-  .catch(() => {
-    document.getElementById("status").innerText = "❌ Gagal kirim!";
-  });
+ambilFoto();
+
+const kode =
+document.getElementById("kode").value;
+
+if(kode !== kodeHariIni){
+
+alert("Kode salah hari ini!");
+return;
+
+}
+
+if(!fotoBase64){
+
+alert("Selfie dulu!");
+return;
+
+}
+
+if(!document.getElementById("lokasi").value){
+
+alert("Ambil lokasi dulu!");
+return;
+
+}
+
+const data = {
+
+waktu:new Date().toLocaleString(
+"id-ID",
+{timeZone:"Asia/Jakarta"}
+),
+
+nama:
+document.getElementById("nama").value,
+
+cabang:
+document.getElementById("cabang").value,
+
+jenis:
+document.getElementById("jenis").value,
+
+kode:kode,
+
+lokasi:
+document.getElementById("lokasi").value,
+
+foto:fotoBase64
+
+};
+
+fetch("PASTE_URL_APPS_SCRIPT_DISINI",{
+
+method:"POST",
+
+body:JSON.stringify(data)
+
+})
+
+.then(()=>{
+
+document.getElementById("status")
+.innerText = "✅ Absen berhasil!";
+
+})
+
+.catch(()=>{
+
+document.getElementById("status")
+.innerText = "❌ Gagal kirim!";
+
+});
 
 }
 
