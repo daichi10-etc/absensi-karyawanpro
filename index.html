@@ -1,183 +1,336 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>ABSENSI DKJ</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Absensi DKJ Group</title>
 
-<style>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-body{
-font-family:Arial;
-background:#1e3c72;
-padding:20px;
-color:white;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #eaf3ff 0%, #f7fbff 100%);
+      color: #123;
+    }
 
-.box{
-max-width:420px;
-margin:auto;
-background:white;
-color:black;
-padding:20px;
-border-radius:12px;
-}
+    .hero {
+      background:
+        linear-gradient(rgba(8, 45, 99, 0.72), rgba(16, 76, 160, 0.78)),
+        url('https://images.unsplash.com/photo-1559847844-d721426d6edc?auto=format&fit=crop&w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      padding: 36px 20px 54px;
+      text-align: center;
+      color: white;
+      border-bottom-left-radius: 28px;
+      border-bottom-right-radius: 28px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
 
-input,select,button{
-width:100%;
-padding:12px;
-margin-top:10px;
-border-radius:8px;
-}
+    .hero h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0.5px;
+    }
 
-button{
-background:#1e3c72;
-color:white;
-border:none;
-}
+    .hero p {
+      margin: 10px auto 0;
+      max-width: 520px;
+      font-size: 14px;
+      line-height: 1.5;
+      opacity: 0.95;
+    }
 
-#status{
-text-align:center;
-margin-top:10px;
-font-weight:bold;
-}
+    .wrap {
+      max-width: 460px;
+      margin: -26px auto 30px;
+      padding: 0 14px;
+    }
 
-</style>
+    .card {
+      background: white;
+      border-radius: 22px;
+      box-shadow: 0 12px 28px rgba(22, 71, 140, 0.15);
+      padding: 22px 18px 20px;
+      border: 1px solid #dce9ff;
+    }
+
+    .mini-badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #e9f2ff;
+      color: #1452b8;
+      font-weight: bold;
+      font-size: 12px;
+      margin-bottom: 14px;
+    }
+
+    .form-title {
+      margin: 0 0 6px;
+      font-size: 22px;
+      color: #0f3f8f;
+      text-align: center;
+    }
+
+    .form-subtitle {
+      text-align: center;
+      margin: 0 0 18px;
+      font-size: 13px;
+      color: #5d6f8a;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #234b88;
+    }
+
+    input,
+    select,
+    button {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid #cfe0ff;
+      padding: 13px 14px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #2f78ff;
+      box-shadow: 0 0 0 3px rgba(47, 120, 255, 0.12);
+    }
+
+    input[readonly] {
+      background: #f4f8ff;
+      color: #36578c;
+    }
+
+    .row-gap {
+      margin-top: 12px;
+    }
+
+    .btn {
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn-location {
+      background: #eaf3ff;
+      color: #0d56c3;
+      margin-top: 10px;
+    }
+
+    .btn-location:hover {
+      background: #d9eaff;
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, #0b59d0, #2f86ff);
+      color: white;
+      margin-top: 16px;
+      box-shadow: 0 10px 18px rgba(47, 120, 255, 0.24);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .info-box {
+      margin-top: 16px;
+      background: #f5f9ff;
+      border: 1px dashed #c5dafc;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #4f6489;
+    }
+
+    #status {
+      margin-top: 14px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 14px;
+      color: #0f4fae;
+      min-height: 20px;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 11px;
+      color: #6b7b95;
+      margin-top: 14px;
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="box">
+  <div class="hero">
+    <h1>🦐 ABSENSI DKJ GROUP</h1>
+    <p>
+      Sistem absensi digital cabang DKJ Group • lebih rapi • lebih cepat • lebih tertib
+    </p>
+  </div>
 
-<h2>ABSENSI DKJ </h2>
+  <div class="wrap">
+    <div class="card">
+      <div class="mini-badge">💙 DEKAJE SYSTEM</div>
 
-<input type="text" id="nama" placeholder="Nama">
+      <h2 class="form-title">Form Absensi</h2>
+      <p class="form-subtitle">
+        Isi data dengan benar, ambil lokasi, lalu kirim absensi.
+      </p>
 
-<select id="cabang">
-<option>Jepara</option>
-<option>Metro</option>
-<option>Rawuh</option>
-</select>
+      <form id="absenForm" onsubmit="kirim(event)">
+        <label>👤 Nama Karyawan</label>
+        <input type="text" id="nama" placeholder="Masukkan nama karyawan" required>
 
-<select id="jenis">
-<option>Masuk</option>
-<option>Pulang</option>
-</select>
+        <label>🏢 Cabang</label>
+        <select id="cabang" required>
+          <option value="">Pilih Cabang</option>
+          <option>DEKAJE METRO</option>
+          <option>DEKAJE WAY JEPARA</option>
+          <option>MIE RAWUH</option>
+          <option>FOTIVA</option>
+        </select>
 
-<input type="file"
-id="foto"
-accept="image/*"
-capture="user">
+        <label>🕒 Jenis Absen</label>
+        <select id="jenis" required>
+          <option value="">Pilih Jenis Absen</option>
+          <option>Masuk</option>
+          <option>Pulang</option>
+        </select>
 
-<input type="text"
-id="lokasi"
-placeholder="Lokasi"
-readonly>
+        <label>🔐 Kode Harian</label>
+        <input type="text" id="kode" placeholder="Masukkan kode harian" required>
 
-<button onclick="ambilLokasi()">
-📍 Ambil Lokasi
-</button>
+        <label>📸 Foto Realtime</label>
+        <input type="file" id="foto" accept="image/*" capture="environment" required>
 
-<button onclick="kirim()">
-Kirim Absensi
-</button>
+        <label>📍 Lokasi</label>
+        <input type="text" id="lokasi" placeholder="Klik tombol ambil lokasi" readonly required>
 
-<p id="status"></p>
+        <button type="button" class="btn btn-location" onclick="ambilLokasi()">
+          📍 Ambil Lokasi Sekarang
+        </button>
 
-</div>
+        <button type="submit" id="submitBtn" class="btn btn-submit">
+          ✅ Kirim Absen
+        </button>
 
-<script>
+        <p id="status"></p>
+      </form>
 
-function ambilLokasi(){
+      <div class="info-box">
+        <strong>Catatan:</strong><br>
+        • Pastikan nama & cabang benar<br>
+        • Klik <strong>Ambil Lokasi</strong> sebelum kirim<br>
+        • Setelah tombol kirim ditekan, tunggu sampai proses selesai<br>
+        • Jangan klik berulang-ulang
+      </div>
 
-navigator.geolocation.getCurrentPosition(
+      <div class="footer-note">
+        DKJ Group Attendance • versi tampilan baru
+      </div>
+    </div>
+  </div>
 
-function(pos){
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwciD_6SiHD-tEYj4Pp7IwkyddG63jVnD9hlLWl98JNZLPn_E95mhaJm5NpdWHC5fXdzg/exec";
+    let sedangKirim = false;
 
-document.getElementById("lokasi").value =
-pos.coords.latitude + "," +
-pos.coords.longitude;
+    function ambilLokasi() {
+      const status = document.getElementById("status");
 
-},
+      if (!navigator.geolocation) {
+        status.innerText = "❌ HP / browser tidak support lokasi";
+        return;
+      }
 
-function(){
+      status.innerText = "📍 Mengambil lokasi...";
 
-alert("GPS gagal");
+      navigator.geolocation.getCurrentPosition(
+        function(pos) {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          document.getElementById("lokasi").value =
+            "https://maps.google.com/?q=" + lat + "," + lng;
+          status.innerText = "✅ Lokasi berhasil diambil";
+        },
+        function() {
+          status.innerText = "❌ Izin lokasi ditolak / gagal diambil";
+        }
+      );
+    }
 
-}
+    function kirim(e) {
+      e.preventDefault();
 
-);
+      if (sedangKirim) {
+        return;
+      }
 
-}
+      const nama = document.getElementById("nama").value.trim();
+      const cabang = document.getElementById("cabang").value;
+      const jenis = document.getElementById("jenis").value;
+      const kode = document.getElementById("kode").value.trim();
+      const lokasi = document.getElementById("lokasi").value.trim();
+      const status = document.getElementById("status");
+      const submitBtn = document.getElementById("submitBtn");
 
-function kirim(){
+      if (!lokasi) {
+        status.innerText = "⚠️ Ambil lokasi dulu bro";
+        return;
+      }
 
-const file =
-document.getElementById("foto")
-.files[0];
+      sedangKirim = true;
+      submitBtn.disabled = true;
+      submitBtn.innerText = "⏳ Sedang Mengirim...";
+      status.innerText = "⏳ Mohon tunggu, data sedang dikirim...";
 
-if(!file){
-
-alert("Foto wajib");
-return;
-
-}
-
-const reader =
-new FileReader();
-
-reader.onloadend = function(){
-
-const data = {
-
-nama:
-document.getElementById("nama").value,
-
-cabang:
-document.getElementById("cabang").value,
-
-jenis:
-document.getElementById("jenis").value,
-
-lokasi:
-document.getElementById("lokasi").value,
-
-foto:
-reader.result
-
-};
-
-fetch("https://script.google.com/macros/s/AKfycbwuXOMqMxdn4zseD4FekCpU0DOFcW286kvE-3wBZvdzm8wDR_OMsL-Gzn7OmusJZJW_3A/exec",{
-
-method:"POST",
-
-body:JSON.stringify(data)
-
-})
-
-.then(r=>r.text())
-
-.then(res=>{
-
-document.getElementById("status")
-.innerText = res;
-
-})
-
-.catch(err=>{
-
-document.getElementById("status")
-.innerText = "ERROR";
-
-});
-
-};
-
-reader.readAsDataURL(file);
-
-}
-
-</script>
+      fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify({
+          nama: nama,
+          cabang: cabang,
+          jenis: jenis,
+          kode: kode,
+          lokasi: lokasi
+        })
+      })
+      .then(() => {
+        status.innerText = "✅ Absen berhasil dikirim";
+        document.getElementById("absenForm").reset();
+        document.getElementById("lokasi").value = "";
+      })
+      .catch(() => {
+        status.innerText = "❌ Gagal kirim data";
+      })
+      .finally(() => {
+        sedangKirim = false;
+        submitBtn.disabled = false;
+        submitBtn.innerText = "✅ Kirim Absen";
+      });
+    }
+  </script>
 
 </body>
 </html>
