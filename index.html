@@ -7,9 +7,7 @@
   <title>Absensi DKJ Group</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -93,9 +91,7 @@
       color: #234b88;
     }
 
-    input,
-    select,
-    button {
+    input, select, button {
       width: 100%;
       border-radius: 14px;
       border: 1px solid #cfe0ff;
@@ -104,8 +100,7 @@
       outline: none;
     }
 
-    input:focus,
-    select:focus {
+    input:focus, select:focus {
       border-color: #2f78ff;
       box-shadow: 0 0 0 3px rgba(47, 120, 255, 0.12);
     }
@@ -128,9 +123,7 @@
       margin-top: 10px;
     }
 
-    .btn-location:hover {
-      background: #d9eaff;
-    }
+    .btn-location:hover { background: #d9eaff; }
 
     .btn-submit {
       background: linear-gradient(135deg, #0b59d0, #2f86ff);
@@ -139,9 +132,7 @@
       box-shadow: 0 10px 18px rgba(47, 120, 255, 0.24);
     }
 
-    .btn-submit:hover {
-      transform: translateY(-1px);
-    }
+    .btn-submit:hover { transform: translateY(-1px); }
 
     .btn-submit:disabled {
       opacity: 0.7;
@@ -168,6 +159,7 @@
       font-size: 14px;
       color: #0f4fae;
       min-height: 20px;
+      white-space: pre-line;
     }
 
     .footer-note {
@@ -192,9 +184,7 @@
       <div class="mini-badge"> DKJ SYSTEM</div>
 
       <h2 class="form-title">Form Absensi</h2>
-      <p class="form-subtitle">
-        Isi data sesuai cabang dan shift kerja hari ini.
-      </p>
+      <p class="form-subtitle">Isi data sesuai cabang dan shift kerja hari ini.</p>
 
       <form id="absenForm" onsubmit="kirim(event)">
 
@@ -232,7 +222,6 @@
         </button>
 
         <p id="status"></p>
-
       </form>
 
       <div class="info-box">
@@ -240,12 +229,10 @@
         • Pastikan nama, cabang, dan jenis absen benar<br>
         • Ambil lokasi sebelum kirim<br>
         • Foto wajib diisi<br>
-        • Jangan klik tombol kirim berulang-ulang
+        • Tunggu sampai proses selesai
       </div>
 
-      <div class="footer-note">
-        DKJ Group Attendance System
-      </div>
+      <div class="footer-note">DKJ Group Attendance System</div>
 
     </div>
   </div>
@@ -281,19 +268,31 @@
       );
     }
 
-    function kirim(e) {
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          const result = reader.result;
+          const base64 = result.split(",")[1];
+          resolve(base64);
+        };
+
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function kirim(e) {
       e.preventDefault();
 
-      if (sedangKirim) {
-        return;
-      }
+      if (sedangKirim) return;
 
       const nama = document.getElementById("nama").value.trim();
       const cabang = document.getElementById("cabang").value;
       const jenis = document.getElementById("jenis").value;
       const lokasi = document.getElementById("lokasi").value.trim();
       const fotoInput = document.getElementById("foto");
-      const foto = fotoInput.files.length > 0 ? "Ada foto" : "";
 
       const status = document.getElementById("status");
       const submitBtn = document.getElementById("submitBtn");
@@ -303,32 +302,44 @@
         return;
       }
 
-      if (!foto) {
+      if (!fotoInput.files || fotoInput.files.length === 0) {
         status.innerText = "⚠️ Foto wajib diisi";
+        return;
+      }
+
+      const file = fotoInput.files[0];
+
+      if (file.size > 5 * 1024 * 1024) {
+        status.innerText = "⚠️ Ukuran foto terlalu besar, maksimal 5MB";
         return;
       }
 
       sedangKirim = true;
       submitBtn.disabled = true;
       submitBtn.innerText = "⏳ Sedang Mengirim...";
-      status.innerText = "⏳ Mohon tunggu, data sedang dikirim...";
+      status.innerText = "⏳ Mengupload foto dan mengirim data...";
 
-      fetch(scriptURL, {
-        method: "POST",
-        body: JSON.stringify({
-          nama: nama,
-          cabang: cabang,
-          jenis: jenis,
-          lokasi: lokasi,
-          foto: foto
-        })
-      })
-      .then(res => res.text())
-      .then(result => {
+      try {
+        const fotoBase64 = await fileToBase64(file);
+
+        const response = await fetch(scriptURL, {
+          method: "POST",
+          body: JSON.stringify({
+            nama: nama,
+            cabang: cabang,
+            jenis: jenis,
+            lokasi: lokasi,
+            fotoBase64: fotoBase64,
+            fotoNama: file.name,
+            fotoType: file.type
+          })
+        });
+
+        let result = await response.text();
         result = result.trim();
 
         if (result === "success" || result === "sukses") {
-          status.innerText = "✅ Absen berhasil dikirim";
+          status.innerText = "✅ Absen berhasil dikirim\n📸 Foto berhasil tersimpan";
           document.getElementById("absenForm").reset();
           document.getElementById("lokasi").value = "";
         } else if (result === "duplicate") {
@@ -336,15 +347,14 @@
         } else {
           status.innerText = "❌ Terjadi error: " + result;
         }
-      })
-      .catch(() => {
-        status.innerText = "❌ Gagal kirim data";
-      })
-      .finally(() => {
+
+      } catch (error) {
+        status.innerText = "❌ Gagal kirim data/foto";
+      } finally {
         sedangKirim = false;
         submitBtn.disabled = false;
         submitBtn.innerText = "✅ Kirim Absen";
-      });
+      }
     }
   </script>
 
