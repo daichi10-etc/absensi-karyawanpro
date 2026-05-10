@@ -20,10 +20,10 @@
     .hero {
       background:
         linear-gradient(rgba(8, 45, 99, 0.72), rgba(16, 76, 160, 0.78)),
-        url('https://images.unsplash.com/photo-1559847844-d721426d6edc?auto=format&fit=crop&w=1200&q=80');
+        url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80');
       background-size: cover;
       background-position: center;
-      padding: 36px 20px 54px;
+      padding: 38px 20px 55px;
       text-align: center;
       color: white;
       border-bottom-left-radius: 28px;
@@ -114,10 +114,6 @@
       color: #36578c;
     }
 
-    .row-gap {
-      margin-top: 12px;
-    }
-
     .btn {
       border: none;
       font-weight: bold;
@@ -184,19 +180,19 @@
 <body>
 
   <div class="hero">
-    <h1>🦐 ABSENSI DKJ GROUP</h1>
+    <h1>ABSENSI DKJ GROUP</h1>
     <p>
-      Sistem absensi digital cabang DKJ Group • lebih rapi • lebih cepat • lebih tertib
+      Sistem kontrol kehadiran karyawan DKJ Group
     </p>
   </div>
 
   <div class="wrap">
     <div class="card">
-      <div class="mini-badge">💙 DEKAJE SYSTEM</div>
+      <div class="mini-badge">💙 DKJ SYSTEM</div>
 
       <h2 class="form-title">Form Absensi</h2>
       <p class="form-subtitle">
-        Isi data dengan benar, ambil lokasi, lalu kirim absensi.
+        Isi data sesuai cabang dan shift kerja hari ini.
       </p>
 
       <form id="absenForm" onsubmit="kirim(event)">
@@ -241,14 +237,14 @@
 
       <div class="info-box">
         <strong>Catatan:</strong><br>
-        • Pastikan nama & cabang benar<br>
-        • Klik <strong>Ambil Lokasi</strong> sebelum kirim<br>
-        • Setelah tombol kirim ditekan, tunggu sampai proses selesai<br>
-        • Jangan klik berulang-ulang
+        • Pastikan nama, cabang, dan jenis absen benar<br>
+        • Ambil lokasi sebelum kirim<br>
+        • Tunggu sampai proses selesai<br>
+        • Jangan klik tombol kirim berulang-ulang
       </div>
 
       <div class="footer-note">
-        DKJ Group Attendance • versi tampilan baru
+        DKJ Group Attendance System
       </div>
     </div>
   </div>
@@ -297,7 +293,7 @@
       const submitBtn = document.getElementById("submitBtn");
 
       if (!lokasi) {
-        status.innerText = "⚠️ Ambil lokasi dulu bro";
+        status.innerText = "⚠️ Ambil lokasi dulu";
         return;
       }
 
@@ -316,10 +312,17 @@
           lokasi: lokasi
         })
       })
-      .then(() => {
-        status.innerText = "✅ Absen berhasil dikirim";
-        document.getElementById("absenForm").reset();
-        document.getElementById("lokasi").value = "";
+      .then(res => res.text())
+      .then(result => {
+        if (result === "success") {
+          status.innerText = "✅ Absen berhasil dikirim";
+          document.getElementById("absenForm").reset();
+          document.getElementById("lokasi").value = "";
+        } else if (result === "duplicate") {
+          status.innerText = "⚠️ Absen sudah pernah diinput hari ini";
+        } else {
+          status.innerText = "❌ Terjadi error: " + result;
+        }
       })
       .catch(() => {
         status.innerText = "❌ Gagal kirim data";
