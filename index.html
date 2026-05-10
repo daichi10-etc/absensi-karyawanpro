@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Absensi DKJ Group</title>
 
   <style>
@@ -19,7 +20,7 @@
 
     .hero {
       background:
-        linear-gradient(rgba(8, 45, 99, 0.72), rgba(16, 76, 160, 0.78)),
+        linear-gradient(rgba(8, 45, 99, 0.75), rgba(16, 76, 160, 0.78)),
         url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80');
       background-size: cover;
       background-position: center;
@@ -177,17 +178,17 @@
     }
   </style>
 </head>
+
 <body>
 
   <div class="hero">
     <h1>ABSENSI DKJ GROUP</h1>
-    <p>
-      Sistem kontrol kehadiran karyawan DKJ Group
-    </p>
+    <p>Sistem kontrol kehadiran karyawan DKJ Group</p>
   </div>
 
   <div class="wrap">
     <div class="card">
+
       <div class="mini-badge">💙 DKJ SYSTEM</div>
 
       <h2 class="form-title">Form Absensi</h2>
@@ -196,6 +197,7 @@
       </p>
 
       <form id="absenForm" onsubmit="kirim(event)">
+
         <label>👤 Nama Karyawan</label>
         <input type="text" id="nama" placeholder="Masukkan nama karyawan" required>
 
@@ -215,9 +217,6 @@
           <option>Pulang</option>
         </select>
 
-        <label>🔐 Kode Harian</label>
-        <input type="text" id="kode" placeholder="Masukkan kode harian" required>
-
         <label>📸 Foto Realtime</label>
         <input type="file" id="foto" accept="image/*" capture="environment" required>
 
@@ -233,24 +232,27 @@
         </button>
 
         <p id="status"></p>
+
       </form>
 
       <div class="info-box">
         <strong>Catatan:</strong><br>
         • Pastikan nama, cabang, dan jenis absen benar<br>
         • Ambil lokasi sebelum kirim<br>
-        • Tunggu sampai proses selesai<br>
+        • Foto wajib diisi<br>
         • Jangan klik tombol kirim berulang-ulang
       </div>
 
       <div class="footer-note">
         DKJ Group Attendance System
       </div>
+
     </div>
   </div>
 
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbwciD_6SiHD-tEYj4Pp7IwkyddG63jVnD9hlLWl98JNZLPn_E95mhaJm5NpdWHC5fXdzg/exec";
+
     let sedangKirim = false;
 
     function ambilLokasi() {
@@ -267,8 +269,10 @@
         function(pos) {
           const lat = pos.coords.latitude;
           const lng = pos.coords.longitude;
+
           document.getElementById("lokasi").value =
             "https://maps.google.com/?q=" + lat + "," + lng;
+
           status.innerText = "✅ Lokasi berhasil diambil";
         },
         function() {
@@ -287,13 +291,20 @@
       const nama = document.getElementById("nama").value.trim();
       const cabang = document.getElementById("cabang").value;
       const jenis = document.getElementById("jenis").value;
-      const kode = document.getElementById("kode").value.trim();
       const lokasi = document.getElementById("lokasi").value.trim();
+      const fotoInput = document.getElementById("foto");
+      const foto = fotoInput.files.length > 0 ? "Ada foto" : "";
+
       const status = document.getElementById("status");
       const submitBtn = document.getElementById("submitBtn");
 
       if (!lokasi) {
         status.innerText = "⚠️ Ambil lokasi dulu";
+        return;
+      }
+
+      if (!foto) {
+        status.innerText = "⚠️ Foto wajib diisi";
         return;
       }
 
@@ -308,13 +319,15 @@
           nama: nama,
           cabang: cabang,
           jenis: jenis,
-          kode: kode,
-          lokasi: lokasi
+          lokasi: lokasi,
+          foto: foto
         })
       })
       .then(res => res.text())
       .then(result => {
-        if (result === "success") {
+        result = result.trim();
+
+        if (result === "success" || result === "sukses") {
           status.innerText = "✅ Absen berhasil dikirim";
           document.getElementById("absenForm").reset();
           document.getElementById("lokasi").value = "";
