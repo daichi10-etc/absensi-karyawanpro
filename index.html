@@ -91,7 +91,7 @@
       color: #234b88;
     }
 
-    input, select, button {
+    input, select, button, textarea {
       width: 100%;
       border-radius: 14px;
       border: 1px solid #cfe0ff;
@@ -100,7 +100,13 @@
       outline: none;
     }
 
-    input:focus, select:focus {
+    textarea {
+      min-height: 86px;
+      resize: vertical;
+      font-family: Arial, sans-serif;
+    }
+
+    input:focus, select:focus, textarea:focus {
       border-color: #2f78ff;
       box-shadow: 0 0 0 3px rgba(47, 120, 255, 0.12);
     }
@@ -181,10 +187,10 @@
   <div class="wrap">
     <div class="card">
 
-      <div class="mini-badge"> DKJ SYSTEM</div>
+      <div class="mini-badge">DKJ SYSTEM</div>
 
       <h2 class="form-title">Form Absensi</h2>
-      <p class="form-subtitle">Isi data sesuai cabang dan shift kerja hari ini.</p>
+      <p class="form-subtitle">Isi data sesuai cabang dan jam kerja hari ini.</p>
 
       <form id="absenForm" onsubmit="kirim(event)">
 
@@ -217,6 +223,9 @@
           📍 Ambil Lokasi Sekarang
         </button>
 
+        <label>📝 Keterangan</label>
+        <textarea id="keterangan" placeholder="Contoh: telat absen karena HP error / sudah izin owner / lupa absen pulang"></textarea>
+
         <button type="submit" id="submitBtn" class="btn btn-submit">
           ✅ Kirim Absen
         </button>
@@ -229,6 +238,7 @@
         • Pastikan nama, cabang, dan jenis absen benar<br>
         • Ambil lokasi sebelum kirim<br>
         • Foto wajib diisi<br>
+        • Isi keterangan jika ada alasan telat/izin/kendala<br>
         • Tunggu sampai proses selesai
       </div>
 
@@ -292,6 +302,7 @@
       const cabang = document.getElementById("cabang").value;
       const jenis = document.getElementById("jenis").value;
       const lokasi = document.getElementById("lokasi").value.trim();
+      const keterangan = document.getElementById("keterangan").value.trim();
       const fotoInput = document.getElementById("foto");
 
       const status = document.getElementById("status");
@@ -329,6 +340,7 @@
             cabang: cabang,
             jenis: jenis,
             lokasi: lokasi,
+            keterangan: keterangan,
             fotoBase64: fotoBase64,
             fotoNama: file.name,
             fotoType: file.type
